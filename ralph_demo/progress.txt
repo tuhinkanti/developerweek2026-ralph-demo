@@ -1,0 +1,21 @@
+# Ralph Demo - Progress Log
+
+## Project Overview
+This project demonstrates refactoring a Java enum (DeploymentTarget) to a database-backed entity (Target).
+The goal is to show incremental, test-driven migration while maintaining backward compatibility.
+
+## Codebase Patterns
+- Package: com.demo
+- Java 17
+- JUnit 5 for testing
+- Gradle build system
+
+## Key Files
+- src/main/java/com/demo/DeploymentTarget.java - Enum to deprecate
+- src/main/java/com/demo/Feature.java - Uses DeploymentTarget
+- src/main/java/com/demo/FeatureService.java - Service layer
+- src/test/java/com/demo/FeatureTest.java - Feature tests
+- src/test/java/com/demo/FeatureServiceTest.java - Service tests
+
+## Learnings
+(Agent will append learnings here after each story)

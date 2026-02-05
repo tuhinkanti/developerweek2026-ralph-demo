@@ -1,0 +1,16 @@
+# Gradle
+.gradle/
+gradle-build/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.cursor/
+
+# OS
+.DS_Store
+
+# Local Gradle properties (may contain machine-specific settings)
+# gradle.properties
