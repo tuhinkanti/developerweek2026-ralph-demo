@@ -1,5 +1,6 @@
 package com.demo;
 
+import com.demo.legacy.LegacyFeatureService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -65,6 +66,19 @@ class FeatureServiceTest {
         
         List<Feature> prodUsFeatures = service.getFeaturesForTarget(DeploymentTarget.PROD_US);
         assertEquals(2, prodUsFeatures.size());
+    }
+
+    @Test
+    void testAddLegacyFeature() {
+        LegacyFeatureService legacyService = new LegacyFeatureService();
+
+        boolean added = service.addLegacyFeature("dark-mode", "production", "us", legacyService);
+
+        assertTrue(added);
+        List<Feature> prodFeatures = service.getProductionFeatures();
+        assertEquals(1, prodFeatures.size());
+        assertEquals("dark-mode", prodFeatures.get(0).getName());
+        assertEquals(DeploymentTarget.PROD_US, prodFeatures.get(0).getTarget());
     }
 
     @Test
