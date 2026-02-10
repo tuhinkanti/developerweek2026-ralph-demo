@@ -18,6 +18,9 @@ public class InMemoryEnvironmentRepository implements EnvironmentRepository {
 
     @Override
     public Optional<Environment> findByName(String name) {
+        if (name == null) {
+            return Optional.empty();
+        }
         return Optional.ofNullable(environments.get(name));
     }
 

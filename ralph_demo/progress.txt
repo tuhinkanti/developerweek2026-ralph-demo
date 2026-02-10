@@ -18,4 +18,13 @@ The goal is to show incremental, test-driven migration while maintaining backwar
 - src/test/java/com/demo/FeatureServiceTest.java - Service tests
 
 ## Learnings
-(Agent will append learnings here after each story)
+- US-001: Created Target data class with id-based equality.
+- US-002: Implemented TargetRepository with InMemory implementation.
+- US-003: Added conversion logic between DeploymentTarget enum and Target entity.
+- US-004: Updated Feature class to support both old and new target models.
+- US-005: Updated FeatureService to use Target entity, maintaining backward compatibility.
+- US-006: Deprecated DeploymentTarget enum.
+- Integration: Integrated TargetRepository into FeatureService and seeded it with legacy targets.
+- Architecture: Decoupled Feature class from DeploymentTarget enum, allowing for truly dynamic targets.
+- Safety: Added null-safety checks and improved robustness of conversion methods.
+- General: Fixed Gradle version mismatch to support Java 21 environment.

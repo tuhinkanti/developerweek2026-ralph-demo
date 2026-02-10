@@ -32,6 +32,9 @@ public class ToggleBuilderImpl implements ToggleBuilder {
 
     @Override
     public ToggleBuilder withEnvironment(String environmentName) {
+        if (environmentName == null) {
+            throw new IllegalArgumentException("Environment name cannot be null");
+        }
         this.environment = repository.findByName(environmentName)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown environment: " + environmentName));
         return this;

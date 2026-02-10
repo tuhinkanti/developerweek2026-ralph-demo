@@ -6,7 +6,7 @@
       "id": "US-001",
       "title": "Create Target data class",
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Create Target class with fields: id, name, environment, region, priority",
         "Include equals/hashCode based on id",
@@ -17,7 +17,7 @@
       "id": "US-002",
       "title": "Create TargetRepository interface",
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Create TargetRepository interface",
         "Methods: findByName(String), findByEnvironment(String), findAll(), save(Target)",
@@ -28,7 +28,7 @@
       "id": "US-003",
       "title": "Add conversion methods to DeploymentTarget enum",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add toTarget() method that converts enum value to Target instance",
         "Add static fromTarget(Target) method that finds matching enum (or throws)",
@@ -39,7 +39,7 @@
       "id": "US-004",
       "title": "Update Feature to support both Target and DeploymentTarget",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add Target field to Feature class",
         "Add constructor that accepts Target instead of DeploymentTarget",
@@ -52,7 +52,7 @@
       "id": "US-005",
       "title": "Update FeatureService to use Target",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add isEnabledFor(Feature, Target) method",
         "Add getTargetsForEnvironment that returns List<Target>",
@@ -64,7 +64,7 @@
       "id": "US-006",
       "title": "Mark DeploymentTarget enum as deprecated",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add @Deprecated annotation to DeploymentTarget enum",
         "Add deprecation Javadoc with migration instructions",

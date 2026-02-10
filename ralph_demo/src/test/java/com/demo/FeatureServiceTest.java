@@ -34,7 +34,8 @@ class FeatureServiceTest {
         Feature feature = new Feature("test", "desc", DeploymentTarget.PROD_US, true);
         
         assertFalse(service.isEnabledFor(null, DeploymentTarget.PROD_US));
-        assertFalse(service.isEnabledFor(feature, null));
+        assertFalse(service.isEnabledFor(feature, (DeploymentTarget) null));
+        assertFalse(service.isEnabledFor(feature, (Target) null));
     }
 
     @Test

@@ -2,8 +2,9 @@ package com.demo;
 
 /**
  * Enum representing deployment targets across different environments and regions.
- * This enum is a candidate for refactoring to a database-backed entity.
+ * @deprecated Use {@link Target} and {@link TargetRepository} instead for dynamic target management.
  */
+@Deprecated
 public enum DeploymentTarget {
     PROD_US("production", "us", 1),
     PROD_EU("production", "eu", 2),
@@ -40,5 +41,19 @@ public enum DeploymentTarget {
 
     public boolean isProduction() {
         return "production".equals(environment);
+    }
+
+    public Target toTarget() {
+        return Target.of(this.name(), environment, region, priority);
+    }
+
+    public static DeploymentTarget fromTarget(Target target) {
+        if (target == null || target.getName() == null) return null;
+        for (DeploymentTarget dt : values()) {
+            if (dt.name().equalsIgnoreCase(target.getName())) {
+                return dt;
+            }
+        }
+        return null;
     }
 }

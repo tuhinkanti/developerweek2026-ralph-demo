@@ -53,6 +53,9 @@ public enum EnvironmentTarget {
     }
     
     public static EnvironmentTarget fromAccountProjectAndValue(String account, String project, String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Value cannot be null");
+        }
         for (EnvironmentTarget target : values()) {
             if (value.equals(target.getValue()) && 
                 ((project == null && target.getProject() == null) || (project != null && project.equals(target.getProject()))) &&
