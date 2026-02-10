@@ -7,6 +7,13 @@ Ralph is the practice of running a coding agent in a Bash loop with tight feedba
 
 In this tech talk, you'll see how this pattern can refactor a legacy codebase -- work that would normally take a developer weeks -- by decomposing the refactor into small, testable stories and letting the agent iterate.
 
+## Purpose
+
+The application code now lives at repository root (`src/main/java` and `src/test/java`).
+The `ralph_demo` folder contains only Ralph loop artifacts and talk materials:
+`ralph.sh`, `prompt.md`, `prd.json`, `progress.txt`, and slide notes.
+Ralph executes from `ralph_demo` but migrates root code story-by-story.
+
 ## Takeaways
 
 - **Understand the Ralph loop**: what runs every iteration, and why the loop structure matters.
@@ -34,8 +41,10 @@ The agent will incrementally migrate from the enum to a string-based `TargetKey`
 
 ```bash
 cd ralph_demo
-./gradlew build
+../gradlew build
 ```
+
+All demo commands are executed from `ralph_demo`, and build/test commands target the root project.
 
 ## Running the Demo
 
@@ -43,7 +52,7 @@ cd ralph_demo
    ```bash
    cat prd.json          # See user stories (9 stories, all passes: false)
    cat progress.txt      # See codebase context
-   ./gradlew test        # Verify tests pass (green baseline)
+   ../gradlew test       # Verify tests pass (green baseline)
    ```
 
 2. **Run the ralph loop:**
@@ -67,34 +76,11 @@ ralph_demo/
 ├── progress.txt       # Context and learnings log
 ├── prompt.md          # Agent instructions
 ├── ralph.sh           # Loop script
-├── build.gradle       # Gradle build
-└── src/
-    ├── main/java/com/demo/obfuscated/
-    │   ├── LegacyTargetCode.java        # Enum to migrate
-    │   ├── RuleStrategy.java            # Strategy interface
-    │   ├── BaseRuleStrategy.java        # Abstract base
-    │   ├── ThresholdRuleStrategy.java   # Threshold impl
-    │   ├── ExpressionRuleStrategy.java  # Expression impl
-    │   ├── RolloutRuleStrategy.java     # Rollout impl
-    │   ├── RuleBuilder.java             # Builder interface
-    │   ├── RuleBuilderImpl.java         # Builder impl
-    │   ├── RuleStrategySerializer.java  # Serializer
-    │   ├── RuleStrategyDeserializer.java # Deserializer
-    │   ├── RuleValidationService.java   # Validation logic
-    │   ├── WebhookHandler.java          # Webhook routing
-    │   ├── FeatureToggleAdapter.java    # Toggle adapter
-    │   ├── TenantConfigLoader.java      # Config loader
-    │   └── TargetHandler.java           # Target routing
-    └── test/java/com/demo/obfuscated/
-        ├── LegacyTargetCodeTest.java
-        ├── ThresholdRuleStrategyTest.java
-        ├── ExpressionRuleStrategyTest.java
-        ├── RolloutRuleStrategyTest.java
-        ├── RuleValidationServiceTest.java
-        ├── WebhookHandlerTest.java
-        ├── FeatureToggleAdapterTest.java
-        ├── TenantConfigLoaderTest.java
-        └── RuleStrategySerializerTest.java
+└── SLIDE_NOTES.md     # Talk notes
+
+src/
+├── main/java/com/demo/obfuscated/   # Legacy enum-heavy code to migrate
+└── test/java/com/demo/obfuscated/   # Test safety net
 ```
 
 ## What to Expect
@@ -115,6 +101,6 @@ All while keeping existing tests passing at every step!
 
 **Agent CLI not found:** Install your agent CLI and ensure it's in your PATH.
 
-**Tests fail:** Check `./gradlew test --info` for details.
+**Tests fail:** Check `../gradlew test --info` for details.
 
 **Agent stuck:** Check `prd.json` for the current story and `progress.txt` for context.
