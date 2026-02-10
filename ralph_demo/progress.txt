@@ -1,21 +1,37 @@
 # Ralph Demo - Progress Log
 
 ## Project Overview
-This project demonstrates refactoring a Java enum (DeploymentTarget) to a database-backed entity (Target).
-The goal is to show incremental, test-driven migration while maintaining backward compatibility.
+This project demonstrates migrating a legacy Java enum (LegacyTargetCode) to a string-based
+data class (TargetKey). The enum has 12 values with two constructor shapes (2-param core targets
+and 5-param suite targets) and is used across 14 files in the codebase. The migration must be
+incremental, test-driven, and backward-compatible at every step.
 
 ## Codebase Patterns
-- Package: com.demo
+- Package: com.demo.obfuscated
 - Java 17
 - JUnit 5 for testing
 - Gradle build system
 
 ## Key Files
-- src/main/java/com/demo/DeploymentTarget.java - Enum to deprecate
-- src/main/java/com/demo/Feature.java - Uses DeploymentTarget
-- src/main/java/com/demo/FeatureService.java - Service layer
-- src/test/java/com/demo/FeatureTest.java - Feature tests
-- src/test/java/com/demo/FeatureServiceTest.java - Service tests
+- src/main/java/com/demo/obfuscated/LegacyTargetCode.java - Enum to migrate away from
+- src/main/java/com/demo/obfuscated/RuleStrategy.java - Interface, returns enum
+- src/main/java/com/demo/obfuscated/BaseRuleStrategy.java - Abstract base, holds enum
+- src/main/java/com/demo/obfuscated/ThresholdRuleStrategy.java - Strategy impl, uses enum
+- src/main/java/com/demo/obfuscated/ExpressionRuleStrategy.java - Strategy impl, uses enum
+- src/main/java/com/demo/obfuscated/RolloutRuleStrategy.java - Strategy impl, uses enum
+- src/main/java/com/demo/obfuscated/RuleBuilder.java - Builder interface, accepts enum
+- src/main/java/com/demo/obfuscated/RuleBuilderImpl.java - Builder impl, holds enum
+- src/main/java/com/demo/obfuscated/RuleStrategySerializer.java - Serializes using enum name
+- src/main/java/com/demo/obfuscated/RuleStrategyDeserializer.java - Deserializes via valueOf
+- src/main/java/com/demo/obfuscated/RuleValidationService.java - Validates using enum identity checks
+- src/main/java/com/demo/obfuscated/WebhookHandler.java - Routes by enum map keys
+- src/main/java/com/demo/obfuscated/FeatureToggleAdapter.java - Toggle logic using enum
+- src/main/java/com/demo/obfuscated/TenantConfigLoader.java - Resolves enum from strings
+- src/main/java/com/demo/obfuscated/TargetHandler.java - Categorizes using enum identity
+
+## Enum Shape
+Core targets (2-param): LegacyTargetCode(value, tenant)
+Suite targets (5-param): LegacyTargetCode(account, project, value, environmentId, tenant)
 
 ## Learnings
 (Agent will append learnings here after each story)

@@ -1,6 +1,8 @@
 # Agent Instructions
 
-You are implementing user stories for a Java refactoring project.
+You are implementing user stories for a Java enum migration project.
+The goal is to migrate the `LegacyTargetCode` enum in `com.demo.obfuscated` to a
+string-based `TargetKey` data class, incrementally and without breaking existing tests.
 
 ## Workflow
 
@@ -25,5 +27,7 @@ When ALL stories have `passes: true`, output exactly:
 
 - Never break existing tests
 - Add new tests for new functionality
-- Follow existing code patterns
-- Keep backward compatibility until final deprecation
+- Follow existing code patterns in `com.demo.obfuscated`
+- Keep backward compatibility until final deprecation story (US-009)
+- All new code goes in the `com.demo.obfuscated` package
+- Do not modify files outside `src/main/java/com/demo/obfuscated/` and `src/test/java/com/demo/obfuscated/`

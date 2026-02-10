@@ -1,12 +1,34 @@
 # Ralph Demo
 
-A demonstration project showing the "ralph loop" pattern for incremental enum-to-database refactoring.
+This repo is a small, runnable example of the "Ralph" technique coined by Geoffrey Huntley:
+https://ghuntley.com/ralph/
+
+Ralph is the practice of running a coding agent in a Bash loop with tight feedback (tests/build) and a lightweight state system (a PRD + progress log). The loop allows the agent to run for as long as needed to finish a task, checking its work as it goes.
+
+In this tech talk, you'll see how this pattern can refactor a legacy codebase -- work that would normally take a developer weeks -- by decomposing the refactor into small, testable stories and letting the agent iterate.
+
+## Takeaways
+
+- **Understand the Ralph loop**: what runs every iteration, and why the loop structure matters.
+- **Learn the practical workflow** to run a "Ralph Wiggum" (agent in a loop) against real code.
+- **See production-grade guardrails**: how to keep changes incremental, reviewable, and safe.
+- **Leave with a reusable repo flow**: a PRD (`prd.json`) + context log (`progress.txt`) + instructions (`prompt.md`) + loop script (`ralph.sh`).
+
+## The Migration Task
+
+The codebase contains a `LegacyTargetCode` enum with 12 values and two constructor shapes:
+- Core targets (2-param): value + tenant
+- Suite targets (5-param): account + project + value + environmentId + tenant
+
+This enum is used across 14+ files: strategy interfaces, builder, serializer, validation services, webhook handler, toggle adapter, and config loader.
+
+The agent will incrementally migrate from the enum to a string-based `TargetKey` data class while keeping all tests green at every step.
 
 ## Prerequisites
 
 - Java 17+
 - Gradle (or use included wrapper)
-- [gemini CLI](https://github.com/google/generative-ai-cli) installed and configured
+- A coding agent CLI (e.g. gemini, claude, etc.)
 
 ## Setup
 
@@ -19,9 +41,9 @@ cd ralph_demo
 
 1. **Review the starting state:**
    ```bash
-   cat prd.json          # See user stories
-   cat progress.txt      # See context
-   ./gradlew test        # Verify tests pass
+   cat prd.json          # See user stories (9 stories, all passes: false)
+   cat progress.txt      # See codebase context
+   ./gradlew test        # Verify tests pass (green baseline)
    ```
 
 2. **Run the ralph loop:**
@@ -47,29 +69,51 @@ ralph_demo/
 ├── ralph.sh           # Loop script
 ├── build.gradle       # Gradle build
 └── src/
-    ├── main/java/com/demo/
-    │   ├── DeploymentTarget.java   # Enum to refactor
-    │   ├── Feature.java            # Feature class
-    │   └── FeatureService.java     # Service layer
-    └── test/java/com/demo/
-        ├── FeatureTest.java
-        └── FeatureServiceTest.java
+    ├── main/java/com/demo/obfuscated/
+    │   ├── LegacyTargetCode.java        # Enum to migrate
+    │   ├── RuleStrategy.java            # Strategy interface
+    │   ├── BaseRuleStrategy.java        # Abstract base
+    │   ├── ThresholdRuleStrategy.java   # Threshold impl
+    │   ├── ExpressionRuleStrategy.java  # Expression impl
+    │   ├── RolloutRuleStrategy.java     # Rollout impl
+    │   ├── RuleBuilder.java             # Builder interface
+    │   ├── RuleBuilderImpl.java         # Builder impl
+    │   ├── RuleStrategySerializer.java  # Serializer
+    │   ├── RuleStrategyDeserializer.java # Deserializer
+    │   ├── RuleValidationService.java   # Validation logic
+    │   ├── WebhookHandler.java          # Webhook routing
+    │   ├── FeatureToggleAdapter.java    # Toggle adapter
+    │   ├── TenantConfigLoader.java      # Config loader
+    │   └── TargetHandler.java           # Target routing
+    └── test/java/com/demo/obfuscated/
+        ├── LegacyTargetCodeTest.java
+        ├── ThresholdRuleStrategyTest.java
+        ├── ExpressionRuleStrategyTest.java
+        ├── RolloutRuleStrategyTest.java
+        ├── RuleValidationServiceTest.java
+        ├── WebhookHandlerTest.java
+        ├── FeatureToggleAdapterTest.java
+        ├── TenantConfigLoaderTest.java
+        └── RuleStrategySerializerTest.java
 ```
 
 ## What to Expect
 
 The agent will:
-1. Create a `Target` data class to replace the enum
-2. Create a `TargetRepository` interface
+1. Create a `TargetKey` data class to replace the enum
+2. Create a `TargetRepository` interface + in-memory impl
 3. Add conversion methods between enum and class
-4. Update `Feature` and `FeatureService` to use both
-5. Mark the enum as deprecated
+4. Add string-based getters to the strategy interface
+5. Update the builder with TargetKey support
+6. Update serialization for backward compatibility
+7. Migrate validation, webhook, adapter, and config files
+8. Mark the enum as deprecated
 
-All while keeping existing tests passing!
+All while keeping existing tests passing at every step!
 
 ## Troubleshooting
 
-**gemini not found:** Install the gemini CLI and ensure it's in your PATH.
+**Agent CLI not found:** Install your agent CLI and ensure it's in your PATH.
 
 **Tests fail:** Check `./gradlew test --info` for details.
 
