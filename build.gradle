@@ -2,18 +2,22 @@ plugins {
     id 'java'
 }
 
-group 'com.example'
+group 'com.demo'
 version '1.0-SNAPSHOT'
 
 layout.buildDirectory = layout.projectDirectory.dir('gradle-build')
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() {
+        metadataSources {
+            gradleMetadata()
+        }
+    }
 }
 
 dependencies {

@@ -1,6 +1,6 @@
 {
   "project": "ralph-demo",
-  "description": "Migrate LegacyTargetCode enum to string-based TargetKey data class",
+  "description": "Single-project Ralph demo: migrate LegacyTargetCode enum to string-based TargetKey data class in root src/com.demo.obfuscated, driven by ralph_demo artifacts",
   "stories": [
     {
       "id": "US-001",

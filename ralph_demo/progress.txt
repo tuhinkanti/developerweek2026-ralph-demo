@@ -12,22 +12,28 @@ incremental, test-driven, and backward-compatible at every step.
 - JUnit 5 for testing
 - Gradle build system
 
+## Project Boundaries
+- The app code and tests are at repository root under `src/**`.
+- Ralph loop control artifacts are in `ralph_demo` (`prd.json`, `progress.txt`, `prompt.md`, `ralph.sh`).
+- Execute from `ralph_demo`; migration edits target `../src/main/java/com/demo/obfuscated/**` and tests in `../src/test/java/com/demo/obfuscated/**`.
+- Verification command for the demo is `../gradlew test`.
+
 ## Key Files
-- src/main/java/com/demo/obfuscated/LegacyTargetCode.java - Enum to migrate away from
-- src/main/java/com/demo/obfuscated/RuleStrategy.java - Interface, returns enum
-- src/main/java/com/demo/obfuscated/BaseRuleStrategy.java - Abstract base, holds enum
-- src/main/java/com/demo/obfuscated/ThresholdRuleStrategy.java - Strategy impl, uses enum
-- src/main/java/com/demo/obfuscated/ExpressionRuleStrategy.java - Strategy impl, uses enum
-- src/main/java/com/demo/obfuscated/RolloutRuleStrategy.java - Strategy impl, uses enum
-- src/main/java/com/demo/obfuscated/RuleBuilder.java - Builder interface, accepts enum
-- src/main/java/com/demo/obfuscated/RuleBuilderImpl.java - Builder impl, holds enum
-- src/main/java/com/demo/obfuscated/RuleStrategySerializer.java - Serializes using enum name
-- src/main/java/com/demo/obfuscated/RuleStrategyDeserializer.java - Deserializes via valueOf
-- src/main/java/com/demo/obfuscated/RuleValidationService.java - Validates using enum identity checks
-- src/main/java/com/demo/obfuscated/WebhookHandler.java - Routes by enum map keys
-- src/main/java/com/demo/obfuscated/FeatureToggleAdapter.java - Toggle logic using enum
-- src/main/java/com/demo/obfuscated/TenantConfigLoader.java - Resolves enum from strings
-- src/main/java/com/demo/obfuscated/TargetHandler.java - Categorizes using enum identity
+- ../src/main/java/com/demo/obfuscated/LegacyTargetCode.java - Enum to migrate away from
+- ../src/main/java/com/demo/obfuscated/RuleStrategy.java - Interface, returns enum
+- ../src/main/java/com/demo/obfuscated/BaseRuleStrategy.java - Abstract base, holds enum
+- ../src/main/java/com/demo/obfuscated/ThresholdRuleStrategy.java - Strategy impl, uses enum
+- ../src/main/java/com/demo/obfuscated/ExpressionRuleStrategy.java - Strategy impl, uses enum
+- ../src/main/java/com/demo/obfuscated/RolloutRuleStrategy.java - Strategy impl, uses enum
+- ../src/main/java/com/demo/obfuscated/RuleBuilder.java - Builder interface, accepts enum
+- ../src/main/java/com/demo/obfuscated/RuleBuilderImpl.java - Builder impl, holds enum
+- ../src/main/java/com/demo/obfuscated/RuleStrategySerializer.java - Serializes using enum name
+- ../src/main/java/com/demo/obfuscated/RuleStrategyDeserializer.java - Deserializes via valueOf
+- ../src/main/java/com/demo/obfuscated/RuleValidationService.java - Validates using enum identity checks
+- ../src/main/java/com/demo/obfuscated/WebhookHandler.java - Routes by enum map keys
+- ../src/main/java/com/demo/obfuscated/FeatureToggleAdapter.java - Toggle logic using enum
+- ../src/main/java/com/demo/obfuscated/TenantConfigLoader.java - Resolves enum from strings
+- ../src/main/java/com/demo/obfuscated/TargetHandler.java - Categorizes using enum identity
 
 ## Enum Shape
 Core targets (2-param): LegacyTargetCode(value, tenant)

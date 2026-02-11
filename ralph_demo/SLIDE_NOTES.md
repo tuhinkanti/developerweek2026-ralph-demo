@@ -7,6 +7,7 @@
 - Introduce yourself
 - "Today I'll show you how I migrated a legacy enum codebase in hours instead of weeks using a technique called Ralph"
 - Credit Geoffrey Huntley: https://ghuntley.com/ralph/
+- "This demo uses root `src` as the app codebase and `ralph_demo` as the Ralph control folder"
 
 ---
 
@@ -134,7 +135,8 @@ done
 
 **Starting state:**
 ```bash
-./gradlew test        # Green baseline (9 test classes, all pass)
+cd ralph_demo
+../gradlew test       # Green baseline (tests at repo root)
 cat prd.json          # 9 stories, all passes: false
 ```
 
