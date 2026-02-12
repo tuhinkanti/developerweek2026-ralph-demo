@@ -1,6 +1,6 @@
 {
   "project": "ralph-demo",
-  "description": "Single-project Ralph demo: migrate LegacyTargetCode enum to string-based TargetKey data class in root src/com.demo.obfuscated, driven by ralph_demo artifacts",
+  "description": "Single-project Ralph demo: migrate LegacyTargetCode enum to string-based TargetKey data class in src/main/java/com/demo/obfuscated, driven by ralph_demo artifacts",
   "stories": [
     {
       "id": "US-001",
@@ -32,10 +32,9 @@
       "priority": 2,
       "passes": false,
       "acceptance_criteria": [
-        "Add toTargetKey() instance method that converts enum to TargetKey",
-        "Add static fromTargetKey(TargetKey) that finds matching enum or throws",
-        "Add static fromValue(String), fromTenantAndValue(String, String), fromAccountProjectAndValue(String, String, String)",
-        "Create TargetConverter utility class with static fromLegacy/toLegacy methods",
+        "Add LegacyTargetCode conversion methods: toTargetKey(), fromTargetKey(TargetKey), fromValue(String), fromTenantAndValue(String, String), fromAccountProjectAndValue(String, String, String)",
+        "Ensure conversion behavior is defined and consistent for unknown or unmapped inputs (documented exception behavior)",
+        "Create TargetConverter utility class with static fromLegacy/toLegacy methods that delegate to the canonical conversion behavior",
         "Add unit tests verifying round-trip conversion for all enum values",
         "Existing tests must still pass"
       ]
@@ -84,8 +83,8 @@
       "priority": 3,
       "passes": false,
       "acceptance_criteria": [
-        "Replace enum identity checks (== LegacyTargetCode.X) with string comparisons in RuleValidationService",
-        "Replace enum map keys with string-based lookups in WebhookHandler",
+        "Migrate RuleValidationService and WebhookHandler logic to target value-based behavior without relying on enum identity checks",
+        "Preserve current behavior for all existing target cases while supporting TargetKey-based inputs",
         "Add TargetKey-accepting overloads where appropriate",
         "Existing tests must still pass"
       ]
