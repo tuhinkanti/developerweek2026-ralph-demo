@@ -9,11 +9,11 @@ This is a single-project demo. Execute from `ralph_demo`, but migrate code at re
 
 1. **Read** `prd.json` to see all user stories and their status
 2. **Read** `progress.txt` for codebase patterns and context
-3. **Pick** the highest priority story where `passes: false`
+3. **Pick** the highest priority story where `passes: false` (if tied, pick the lowest story ID)
 4. **Implement** the story following acceptance criteria
 5. **Run** `../gradlew test` to verify all tests pass
 6. **Commit** with format: `feat: US-XXX - Title`
-7. **Update** `prd.json` to set `passes: true` for completed story
+7. **Update** `prd.json` to set `passes: true` only after acceptance criteria are met and tests pass
 8. **Append** any learnings to `progress.txt`
 9. **Repeat** until all stories pass
 
@@ -30,6 +30,7 @@ When ALL stories have `passes: true`, output exactly:
 - Add new tests for new functionality
 - Follow existing code patterns in `com.demo.obfuscated`
 - Keep backward compatibility until final deprecation story (US-009)
+- Complete one story at a time; do not mark multiple stories as passed in one iteration
 - All new code goes in the `com.demo.obfuscated` package
 - Run commands from `ralph_demo` only
 - Do not modify files outside:

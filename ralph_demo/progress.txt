@@ -41,3 +41,25 @@ Suite targets (5-param): LegacyTargetCode(account, project, value, environmentId
 
 ## Learnings
 (Agent will append learnings here after each story)
+
+## Talk Track Checkpoints
+1) Foundation checkpoint (US-001 to US-003)
+- Introduce TargetKey, repository lookup model, and canonical conversion contracts.
+- Demo artifact: passing tests for TargetKey behavior and enum/TargetKey round-trip conversion.
+
+2) First integration checkpoint (US-004 to US-005)
+- Surface TargetKey through strategy and builder APIs while keeping enum callers working.
+- Demo artifact: compatibility-focused strategy and builder tests remain green.
+
+3) Compatibility checkpoint (US-006 to US-008)
+- Expand migration into serializer/deserializer, validation, webhook, adapter, loader, and handler paths.
+- Demo artifact: tests prove both legacy and new payload/lookup paths work.
+
+4) Deprecation checkpoint (US-009)
+- Mark LegacyTargetCode as deprecated with migration guidance and prevent new active usage.
+- Demo artifact: all tests pass with deprecation state in place.
+
+## Loop Execution Sizing Notes
+- Stories are intentionally scoped to one seam each (data model, conversion, interface, serialization, integration, deprecation).
+- Priorities are dependency-safe: foundations (P1/P2) precede broad integration (P3) and deprecation (P4).
+- `passes` remains binary per story and should be flipped only after `../gradlew test` is green.
