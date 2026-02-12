@@ -1,6 +1,6 @@
 {
   "project": "ralph-demo",
-  "description": "Single-project Ralph demo: migrate LegacyTargetCode enum to string-based TargetKey data class in root src/com.demo.obfuscated, driven by ralph_demo artifacts",
+  "description": "Single-project Ralph demo: migrate LegacyTargetCode enum to string-based TargetKey data class in src/main/java/com/demo/obfuscated, driven by ralph_demo artifacts",
   "stories": [
     {
       "id": "US-001",
@@ -9,10 +9,10 @@
       "passes": false,
       "acceptance_criteria": [
         "Create TargetKey class in com.demo.obfuscated with fields: value, account, project, environmentId, tenant",
-        "Include equals/hashCode based on all fields",
-        "Include getValueWithProject() that returns project__value or just value",
-        "Include toString()",
-        "Add unit tests for TargetKey"
+        "Implement equals/hashCode on all fields and include a deterministic toString()",
+        "Implement getValueWithProject() that returns project__value when project is present, otherwise value",
+        "Add unit tests for equality/hashCode and getValueWithProject() across core and suite target shapes",
+        "Existing tests must still pass"
       ]
     },
     {
@@ -22,8 +22,9 @@
       "passes": false,
       "acceptance_criteria": [
         "Create TargetRepository interface with findByValue, findByAccountProjectAndValue, findByTenantAndTarget, findAll",
-        "Create InMemoryTargetRepository that seeds from LegacyTargetCode.values()",
-        "Add unit tests for InMemoryTargetRepository"
+        "Create InMemoryTargetRepository that seeds from LegacyTargetCode.values() and supports deterministic lookup behavior for core and suite targets",
+        "Add unit tests for each repository lookup path including unknown target handling",
+        "Existing tests must still pass"
       ]
     },
     {
@@ -32,10 +33,9 @@
       "priority": 2,
       "passes": false,
       "acceptance_criteria": [
-        "Add toTargetKey() instance method that converts enum to TargetKey",
-        "Add static fromTargetKey(TargetKey) that finds matching enum or throws",
-        "Add static fromValue(String), fromTenantAndValue(String, String), fromAccountProjectAndValue(String, String, String)",
-        "Create TargetConverter utility class with static fromLegacy/toLegacy methods",
+        "Add LegacyTargetCode conversion methods: toTargetKey(), fromTargetKey(TargetKey), fromValue(String), fromTenantAndValue(String, String), fromAccountProjectAndValue(String, String, String)",
+        "Ensure conversion behavior is defined and consistent for unknown or unmapped inputs with documented IllegalArgumentException behavior",
+        "Create TargetConverter utility class with static fromLegacy/toLegacy methods that delegate to the canonical conversion behavior",
         "Add unit tests verifying round-trip conversion for all enum values",
         "Existing tests must still pass"
       ]
@@ -46,10 +46,10 @@
       "priority": 2,
       "passes": false,
       "acceptance_criteria": [
-        "Add default method getTargetKey() to RuleStrategy that converts via TargetConverter",
+        "Add default method getTargetKey() to RuleStrategy that maps existing enum behavior through TargetConverter",
         "Add default method getTargetValue() that returns the string value",
-        "Update BaseRuleStrategy to support construction from TargetKey as well as enum",
-        "Update ThresholdRuleStrategy, ExpressionRuleStrategy, RolloutRuleStrategy with TargetKey constructors",
+        "Update BaseRuleStrategy and concrete strategies to support construction from TargetKey as well as enum",
+        "Add or update tests proving enum-based behavior remains compatible while TargetKey-based access works",
         "Existing tests must still pass"
       ]
     },
@@ -61,7 +61,7 @@
       "acceptance_criteria": [
         "Add default method withTargetKey(TargetKey) to RuleBuilder interface",
         "Update RuleBuilderImpl to support building from TargetKey",
-        "Add unit tests for building with TargetKey",
+        "Add unit tests for building with TargetKey while preserving existing enum-based builder behavior",
         "Existing tests must still pass"
       ]
     },
@@ -74,7 +74,7 @@
         "Update RuleStrategySerializer to write TargetKey fields (value, tenant, account, project, environmentId)",
         "Update RuleStrategyDeserializer to read both legacy enum name and new TargetKey fields",
         "Ensure backward compatibility: can deserialize old format and new format",
-        "Add unit tests for both formats",
+        "Add unit tests for old and new formats, including round-trip compatibility",
         "Existing tests must still pass"
       ]
     },
@@ -84,9 +84,9 @@
       "priority": 3,
       "passes": false,
       "acceptance_criteria": [
-        "Replace enum identity checks (== LegacyTargetCode.X) with string comparisons in RuleValidationService",
-        "Replace enum map keys with string-based lookups in WebhookHandler",
-        "Add TargetKey-accepting overloads where appropriate",
+        "Migrate RuleValidationService and WebhookHandler logic to target value-based behavior without relying on enum identity checks",
+        "Preserve current behavior for all existing target cases while supporting TargetKey-based inputs",
+        "Add TargetKey-accepting overloads where appropriate and cover them with regression tests",
         "Existing tests must still pass"
       ]
     },
@@ -98,8 +98,8 @@
       "acceptance_criteria": [
         "Update FeatureToggleAdapter to accept TargetKey in isEnabled and register methods",
         "Update TenantConfigLoader to return TargetKey from resolve methods",
-        "Update TargetHandler to work with TargetKey",
-        "Add TargetKey-based unit tests",
+        "Update TargetHandler to work with TargetKey while preserving existing behavior for legacy callers",
+        "Add TargetKey-based unit tests and compatibility regression coverage",
         "Existing tests must still pass"
       ]
     },
@@ -112,7 +112,7 @@
         "Add @Deprecated annotation to LegacyTargetCode enum",
         "Add deprecation Javadoc with migration instructions pointing to TargetKey",
         "Deprecate all methods that accept or return LegacyTargetCode with @Deprecated",
-        "All tests pass with no compilation warnings in new code"
+        "All tests pass and no new non-deprecated call sites introduce LegacyTargetCode usage"
       ]
     }
   ]
