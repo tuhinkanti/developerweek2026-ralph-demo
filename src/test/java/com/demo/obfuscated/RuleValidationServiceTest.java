@@ -77,7 +77,7 @@ class RuleValidationServiceTest {
 
     @Test
     void nullTargetFails() {
-        ThresholdRuleStrategy strategy = new ThresholdRuleStrategy(null, 10);
+        ThresholdRuleStrategy strategy = new ThresholdRuleStrategy((LegacyTargetCode) null, 10);
         List<String> errors = service.validate(strategy);
         assertTrue(errors.stream().anyMatch(e -> e.contains("null")));
     }

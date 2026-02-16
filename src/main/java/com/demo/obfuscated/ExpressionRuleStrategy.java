@@ -11,6 +11,11 @@ public class ExpressionRuleStrategy extends BaseRuleStrategy {
         this.expression = expression;
     }
 
+    public ExpressionRuleStrategy(TargetKey targetKey, String expression) {
+        super(targetKey);
+        this.expression = expression;
+    }
+
     public String getExpression() {
         return expression;
     }

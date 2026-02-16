@@ -5,4 +5,13 @@ package com.demo.obfuscated;
  */
 public interface RuleStrategy {
     LegacyTargetCode getTarget();
+
+    default TargetKey getTargetKey() {
+        return TargetConverter.fromLegacy(getTarget());
+    }
+
+    default String getTargetValue() {
+        LegacyTargetCode target = getTarget();
+        return target != null ? target.getValue() : null;
+    }
 }
