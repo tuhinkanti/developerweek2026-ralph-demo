@@ -83,4 +83,46 @@ class RuleStrategySerializerTest {
     void deserializeInvalidTargetReturnsNull() {
         assertNull(deserializer.deserialize("target=INVALID;threshold=10"));
     }
+
+    @Test
+    void serializeAndDeserializeWithTargetKey() {
+        TargetKey key = new TargetKey("v1", "a1", "p1", "e1", "t1");
+        ThresholdRuleStrategy strategy = new ThresholdRuleStrategy(key, 99);
+        String serialized = serializer.serialize(strategy);
+
+        assertTrue(serialized.contains("value=v1"));
+        assertTrue(serialized.contains("tenant=t1"));
+        assertTrue(serialized.contains("account=a1"));
+        assertTrue(serialized.contains("project=p1"));
+        assertTrue(serialized.contains("environmentId=e1"));
+
+        RuleStrategy deserialized = deserializer.deserialize(serialized);
+        assertNotNull(deserialized);
+        assertEquals(key, deserialized.getTargetKey());
+        assertEquals(99, ((ThresholdRuleStrategy) deserialized).getThreshold());
+    }
+
+    @Test
+    void deserializeOldFormatWithoutTargetKeyFields() {
+        // Only target enum name, and value/tenant
+        String raw = "target=CORE_PROD;value=prod;tenant=tenant-main;threshold=42";
+        RuleStrategy result = deserializer.deserialize(raw);
+
+        assertNotNull(result);
+        assertEquals(LegacyTargetCode.CORE_PROD, result.getTarget());
+        assertEquals(LegacyTargetCode.CORE_PROD.toTargetKey(), result.getTargetKey());
+    }
+
+    @Test
+    void roundTripLegacyEnum() {
+        for (LegacyTargetCode code : LegacyTargetCode.values()) {
+            ThresholdRuleStrategy strategy = new ThresholdRuleStrategy(code, 50);
+            String serialized = serializer.serialize(strategy);
+            RuleStrategy deserialized = deserializer.deserialize(serialized);
+            
+            assertNotNull(deserialized);
+            assertEquals(code, deserialized.getTarget());
+            assertEquals(code.toTargetKey(), deserialized.getTargetKey());
+        }
+    }
 }

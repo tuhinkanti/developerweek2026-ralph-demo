@@ -9,11 +9,24 @@ public class RuleStrategySerializer {
         if (strategy == null) {
             return "";
         }
-        LegacyTargetCode target = strategy.getTarget();
+        TargetKey key = strategy.getTargetKey();
+        LegacyTargetCode legacy = strategy.getTarget();
         StringBuilder sb = new StringBuilder();
-        sb.append("target=").append(target != null ? target.name() : "");
-        sb.append(";value=").append(target != null ? target.getValue() : "");
-        sb.append(";tenant=").append(target != null ? target.getTenant() : "");
+        
+        // target name for backward compatibility
+        sb.append("target=").append(legacy != null ? legacy.name() : "");
+        
+        if (key != null) {
+            sb.append(";value=").append(key.getValue() != null ? key.getValue() : "");
+            sb.append(";tenant=").append(key.getTenant() != null ? key.getTenant() : "");
+            sb.append(";account=").append(key.getAccount() != null ? key.getAccount() : "");
+            sb.append(";project=").append(key.getProject() != null ? key.getProject() : "");
+            sb.append(";environmentId=").append(key.getEnvironmentId() != null ? key.getEnvironmentId() : "");
+        } else if (legacy != null) {
+            sb.append(";value=").append(legacy.getValue() != null ? legacy.getValue() : "");
+            sb.append(";tenant=").append(legacy.getTenant() != null ? legacy.getTenant() : "");
+        }
+
         if (strategy instanceof ThresholdRuleStrategy) {
             sb.append(";threshold=").append(((ThresholdRuleStrategy) strategy).getThreshold());
         }
