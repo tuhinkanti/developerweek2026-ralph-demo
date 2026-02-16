@@ -8,38 +8,46 @@ import java.util.Map;
  */
 public class WebhookHandler {
 
-    private final Map<LegacyTargetCode, String> targetEndpoints = new HashMap<>();
+    private final Map<TargetKey, String> targetEndpoints = new HashMap<>();
 
     public WebhookHandler() {
-        targetEndpoints.put(LegacyTargetCode.CORE_PROD, "/hooks/core/prod");
-        targetEndpoints.put(LegacyTargetCode.CORE_TEST, "/hooks/core/test");
-        targetEndpoints.put(LegacyTargetCode.CORE_EDGE, "/hooks/core/edge");
-        targetEndpoints.put(LegacyTargetCode.AUX_PROD, "/hooks/aux/prod");
-        targetEndpoints.put(LegacyTargetCode.AUX_TEST, "/hooks/aux/test");
-        targetEndpoints.put(LegacyTargetCode.SUITE_ALPHA_PROD, "/hooks/suite-a/prod");
-        targetEndpoints.put(LegacyTargetCode.SUITE_BETA_PROD, "/hooks/suite-b/prod");
-        targetEndpoints.put(LegacyTargetCode.SUITE_GAMMA_PROD, "/hooks/suite-c/prod");
+        targetEndpoints.put(LegacyTargetCode.CORE_PROD.toTargetKey(), "/hooks/core/prod");
+        targetEndpoints.put(LegacyTargetCode.CORE_TEST.toTargetKey(), "/hooks/core/test");
+        targetEndpoints.put(LegacyTargetCode.CORE_EDGE.toTargetKey(), "/hooks/core/edge");
+        targetEndpoints.put(LegacyTargetCode.AUX_PROD.toTargetKey(), "/hooks/aux/prod");
+        targetEndpoints.put(LegacyTargetCode.AUX_TEST.toTargetKey(), "/hooks/aux/test");
+        targetEndpoints.put(LegacyTargetCode.SUITE_ALPHA_PROD.toTargetKey(), "/hooks/suite-a/prod");
+        targetEndpoints.put(LegacyTargetCode.SUITE_BETA_PROD.toTargetKey(), "/hooks/suite-b/prod");
+        targetEndpoints.put(LegacyTargetCode.SUITE_GAMMA_PROD.toTargetKey(), "/hooks/suite-c/prod");
     }
 
-    public String resolveEndpoint(LegacyTargetCode target) {
+    public String resolveEndpoint(TargetKey target) {
         if (target == null) {
             return null;
         }
         return targetEndpoints.get(target);
     }
 
-    public WebhookResult handle(String eventType, LegacyTargetCode target) {
+    public String resolveEndpoint(LegacyTargetCode target) {
+        return target != null ? resolveEndpoint(target.toTargetKey()) : null;
+    }
+
+    public WebhookResult handle(String eventType, TargetKey target) {
         if (eventType == null || target == null) {
             return new WebhookResult(false, "Missing event type or target");
         }
         String endpoint = resolveEndpoint(target);
         if (endpoint == null) {
-            return new WebhookResult(false, "No endpoint configured for target: " + target.name());
+            return new WebhookResult(false, "No endpoint configured for target: " + target);
         }
-        if (target.isProduction() && "delete".equalsIgnoreCase(eventType)) {
+        if ("prod".equals(target.getValue()) && "delete".equalsIgnoreCase(eventType)) {
             return new WebhookResult(false, "Delete events blocked for production targets");
         }
         return new WebhookResult(true, "Routed " + eventType + " to " + endpoint);
+    }
+
+    public WebhookResult handle(String eventType, LegacyTargetCode target) {
+        return target != null ? handle(eventType, target.toTargetKey()) : new WebhookResult(false, "Missing target");
     }
 
     public static class WebhookResult {
