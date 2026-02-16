@@ -42,4 +42,55 @@ class LegacyTargetCodeTest {
     void enumValuesCount() {
         assertEquals(12, LegacyTargetCode.values().length);
     }
+
+    @Test
+    void testToTargetKey() {
+        for (LegacyTargetCode code : LegacyTargetCode.values()) {
+            TargetKey key = code.toTargetKey();
+            assertEquals(code.getValue(), key.getValue());
+            assertEquals(code.getTenant(), key.getTenant());
+            assertEquals(code.getAccount(), key.getAccount());
+            assertEquals(code.getProject(), key.getProject());
+            assertEquals(code.getEnvironmentId(), key.getEnvironmentId());
+        }
+    }
+
+    @Test
+    void testFromTargetKey() {
+        for (LegacyTargetCode code : LegacyTargetCode.values()) {
+            TargetKey key = code.toTargetKey();
+            assertEquals(code, LegacyTargetCode.fromTargetKey(key));
+        }
+    }
+
+    @Test
+    void testFromValue() {
+        assertEquals(LegacyTargetCode.CORE_PROD, LegacyTargetCode.fromValue("prod"));
+    }
+
+    @Test
+    void testFromTenantAndValue() {
+        assertEquals(LegacyTargetCode.AUX_PROD, LegacyTargetCode.fromTenantAndValue("tenant-aux", "prod"));
+    }
+
+    @Test
+    void testFromAccountProjectAndValue() {
+        assertEquals(LegacyTargetCode.SUITE_ALPHA_PROD, LegacyTargetCode.fromAccountProjectAndValue("suite-alpha", "default", "prod"));
+    }
+
+    @Test
+    void testTargetConverter() {
+        for (LegacyTargetCode code : LegacyTargetCode.values()) {
+            TargetKey key = TargetConverter.fromLegacy(code);
+            assertEquals(code, TargetConverter.toLegacy(key));
+        }
+    }
+
+    @Test
+    void testUnknownInputsThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> LegacyTargetCode.fromValue("unknown"));
+        assertThrows(IllegalArgumentException.class, () -> LegacyTargetCode.fromTenantAndValue("unknown", "prod"));
+        assertThrows(IllegalArgumentException.class, () -> LegacyTargetCode.fromAccountProjectAndValue("unknown", "none", "prod"));
+        assertThrows(IllegalArgumentException.class, () -> LegacyTargetCode.fromTargetKey(new TargetKey("none", null, null, null, "none")));
+    }
 }

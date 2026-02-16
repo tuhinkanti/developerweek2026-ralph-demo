@@ -61,4 +61,47 @@ public enum LegacyTargetCode {
     public boolean isProduction() {
         return "prod".equals(value);
     }
+
+    public TargetKey toTargetKey() {
+        return new TargetKey(value, account, project, environmentId, tenant);
+    }
+
+    public static LegacyTargetCode fromTargetKey(TargetKey key) {
+        if (key == null) return null;
+        for (LegacyTargetCode code : values()) {
+            if (code.toTargetKey().equals(key)) {
+                return code;
+            }
+        }
+        throw new IllegalArgumentException("Unknown TargetKey: " + key);
+    }
+
+    public static LegacyTargetCode fromValue(String value) {
+        for (LegacyTargetCode code : values()) {
+            if (code.value.equals(value)) {
+                return code;
+            }
+        }
+        throw new IllegalArgumentException("Unknown value: " + value);
+    }
+
+    public static LegacyTargetCode fromTenantAndValue(String tenant, String value) {
+        for (LegacyTargetCode code : values()) {
+            if (java.util.Objects.equals(code.tenant, tenant) && java.util.Objects.equals(code.value, value)) {
+                return code;
+            }
+        }
+        throw new IllegalArgumentException("Unknown tenant/value: " + tenant + "/" + value);
+    }
+
+    public static LegacyTargetCode fromAccountProjectAndValue(String account, String project, String value) {
+        for (LegacyTargetCode code : values()) {
+            if (java.util.Objects.equals(code.account, account)
+                    && java.util.Objects.equals(code.project, project)
+                    && java.util.Objects.equals(code.value, value)) {
+                return code;
+            }
+        }
+        throw new IllegalArgumentException("Unknown account/project/value: " + account + "/" + project + "/" + value);
+    }
 }
