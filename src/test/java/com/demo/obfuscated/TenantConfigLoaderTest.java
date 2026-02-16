@@ -18,35 +18,35 @@ class TenantConfigLoaderTest {
 
     @Test
     void getTargetsForCoreTenant() {
-        List<LegacyTargetCode> targets = loader.getTargetsForTenant("tenant-main");
+        List<TargetKey> targets = loader.getTargetsForTenant("tenant-main");
         assertEquals(3, targets.size());
-        assertTrue(targets.contains(LegacyTargetCode.CORE_PROD));
-        assertTrue(targets.contains(LegacyTargetCode.CORE_TEST));
-        assertTrue(targets.contains(LegacyTargetCode.CORE_EDGE));
+        assertTrue(targets.contains(LegacyTargetCode.CORE_PROD.toTargetKey()));
+        assertTrue(targets.contains(LegacyTargetCode.CORE_TEST.toTargetKey()));
+        assertTrue(targets.contains(LegacyTargetCode.CORE_EDGE.toTargetKey()));
     }
 
     @Test
     void getTargetsForSuiteTenant() {
-        List<LegacyTargetCode> targets = loader.getTargetsForTenant("tenant-suite-c");
+        List<TargetKey> targets = loader.getTargetsForTenant("tenant-suite-c");
         assertEquals(3, targets.size());
     }
 
     @Test
     void getTargetsForUnknownTenant() {
-        List<LegacyTargetCode> targets = loader.getTargetsForTenant("unknown");
+        List<TargetKey> targets = loader.getTargetsForTenant("unknown");
         assertTrue(targets.isEmpty());
     }
 
     @Test
     void resolveByTenantAndValue() {
-        assertEquals(LegacyTargetCode.CORE_PROD, loader.resolve("tenant-main", "prod"));
-        assertEquals(LegacyTargetCode.AUX_TEST, loader.resolve("tenant-aux", "test"));
+        assertEquals(LegacyTargetCode.CORE_PROD.toTargetKey(), loader.resolve("tenant-main", "prod"));
+        assertEquals(LegacyTargetCode.AUX_TEST.toTargetKey(), loader.resolve("tenant-aux", "test"));
         assertNull(loader.resolve("tenant-main", "stage"));
     }
 
     @Test
     void resolveByAccountProjectValue() {
-        assertEquals(LegacyTargetCode.SUITE_BETA_STAGE,
+        assertEquals(LegacyTargetCode.SUITE_BETA_STAGE.toTargetKey(),
                 loader.resolveByAccountProjectValue("suite-beta", "blue", "stage"));
     }
 

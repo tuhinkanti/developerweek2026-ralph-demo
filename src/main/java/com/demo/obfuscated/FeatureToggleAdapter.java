@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Adapter that manages feature toggle rules and evaluates them by target.
@@ -19,7 +20,7 @@ public class FeatureToggleAdapter {
         toggleRules.computeIfAbsent(toggleName, k -> new ArrayList<>()).add(strategy);
     }
 
-    public boolean isEnabled(String toggleName, LegacyTargetCode target) {
+    public boolean isEnabled(String toggleName, TargetKey target) {
         if (toggleName == null || target == null) {
             return false;
         }
@@ -28,40 +29,40 @@ public class FeatureToggleAdapter {
             return false;
         }
         for (RuleStrategy rule : rules) {
-            if (rule.getTarget() == target) {
+            if (target.equals(rule.getTargetKey())) {
                 return evaluateRule(rule);
             }
         }
         return false;
     }
 
-    public List<LegacyTargetCode> getTargetsForToggle(String toggleName) {
-        List<LegacyTargetCode> targets = new ArrayList<>();
-        List<RuleStrategy> rules = toggleRules.get(toggleName);
-        if (rules == null) {
-            return targets;
-        }
-        for (RuleStrategy rule : rules) {
-            if (rule.getTarget() != null && !targets.contains(rule.getTarget())) {
-                targets.add(rule.getTarget());
-            }
-        }
-        return targets;
+    public boolean isEnabled(String toggleName, LegacyTargetCode target) {
+        return isEnabled(toggleName, target != null ? target.toTargetKey() : null);
     }
 
-    public List<LegacyTargetCode> getProductionTargetsForToggle(String toggleName) {
-        List<LegacyTargetCode> targets = new ArrayList<>();
+    public List<TargetKey> getTargetsForToggle(String toggleName) {
         List<RuleStrategy> rules = toggleRules.get(toggleName);
         if (rules == null) {
-            return targets;
+            return new ArrayList<>();
         }
-        for (RuleStrategy rule : rules) {
-            LegacyTargetCode t = rule.getTarget();
-            if (t != null && t.isProduction() && !targets.contains(t)) {
-                targets.add(t);
-            }
-        }
-        return targets;
+        return rules.stream()
+                .map(RuleStrategy::getTargetKey)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<LegacyTargetCode> getLegacyTargetsForToggle(String toggleName) {
+        return getTargetsForToggle(toggleName).stream()
+                .map(TargetConverter::toLegacy)
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public List<TargetKey> getProductionTargetsForToggle(String toggleName) {
+        return getTargetsForToggle(toggleName).stream()
+                .filter(t -> "prod".equals(t.getValue()))
+                .collect(Collectors.toList());
     }
 
     private boolean evaluateRule(RuleStrategy rule) {

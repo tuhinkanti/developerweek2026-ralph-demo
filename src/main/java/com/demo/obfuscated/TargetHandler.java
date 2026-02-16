@@ -2,64 +2,53 @@ package com.demo.obfuscated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 
 /**
  * Utility that routes actions based on target type and environment.
  */
 public class TargetHandler {
 
-    public String categorize(LegacyTargetCode target) {
+    public String categorize(TargetKey target) {
         if (target == null) {
             return "unknown";
         }
-        if (target == LegacyTargetCode.CORE_PROD
-                || target == LegacyTargetCode.AUX_PROD
-                || target == LegacyTargetCode.SUITE_ALPHA_PROD
-                || target == LegacyTargetCode.SUITE_BETA_PROD
-                || target == LegacyTargetCode.SUITE_GAMMA_PROD) {
-            return "production";
-        }
-        if (target == LegacyTargetCode.CORE_TEST
-                || target == LegacyTargetCode.AUX_TEST
-                || target == LegacyTargetCode.SUITE_ALPHA_TEST
-                || target == LegacyTargetCode.SUITE_GAMMA_TEST) {
-            return "test";
-        }
-        if (target == LegacyTargetCode.CORE_EDGE
-                || target == LegacyTargetCode.SUITE_GAMMA_EDGE) {
-            return "edge";
-        }
-        if (target == LegacyTargetCode.SUITE_BETA_STAGE) {
-            return "stage";
-        }
+        String value = target.getValue();
+        if ("prod".equals(value)) return "production";
+        if ("test".equals(value)) return "test";
+        if ("edge".equals(value)) return "edge";
+        if ("stage".equals(value)) return "stage";
         return "unknown";
     }
 
-    public boolean requiresApproval(LegacyTargetCode target) {
+    public String categorize(LegacyTargetCode target) {
+        return categorize(target != null ? target.toTargetKey() : null);
+    }
+
+    public boolean requiresApproval(TargetKey target) {
         String category = categorize(target);
         return "production".equals(category) || "stage".equals(category);
     }
 
-    public List<LegacyTargetCode> getProductionTargets() {
-        List<LegacyTargetCode> results = new ArrayList<>();
-        for (LegacyTargetCode target : LegacyTargetCode.values()) {
-            if (target.isProduction()) {
-                results.add(target);
-            }
-        }
-        return results;
+    public boolean requiresApproval(LegacyTargetCode target) {
+        return requiresApproval(target != null ? target.toTargetKey() : null);
     }
 
-    public List<LegacyTargetCode> getTargetsForTenant(String tenant) {
-        List<LegacyTargetCode> results = new ArrayList<>();
+    public List<TargetKey> getProductionTargets() {
+        return Arrays.stream(LegacyTargetCode.values())
+                .filter(LegacyTargetCode::isProduction)
+                .map(LegacyTargetCode::toTargetKey)
+                .collect(Collectors.toList());
+    }
+
+    public List<TargetKey> getTargetsForTenant(String tenant) {
         if (tenant == null) {
-            return results;
+            return new ArrayList<>();
         }
-        for (LegacyTargetCode target : LegacyTargetCode.values()) {
-            if (tenant.equals(target.getTenant())) {
-                results.add(target);
-            }
-        }
-        return results;
+        return Arrays.stream(LegacyTargetCode.values())
+                .filter(t -> tenant.equals(t.getTenant()))
+                .map(LegacyTargetCode::toTargetKey)
+                .collect(Collectors.toList());
     }
 }
