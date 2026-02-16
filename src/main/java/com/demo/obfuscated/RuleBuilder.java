@@ -6,6 +6,10 @@ package com.demo.obfuscated;
 public interface RuleBuilder {
     RuleBuilder withTarget(LegacyTargetCode target);
 
+    default RuleBuilder withTargetKey(TargetKey targetKey) {
+        return withTarget(TargetConverter.toLegacy(targetKey));
+    }
+
     RuleBuilder withThreshold(int threshold);
 
     RuleStrategy build();
