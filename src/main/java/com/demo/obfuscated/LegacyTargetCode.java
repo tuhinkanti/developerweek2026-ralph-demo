@@ -6,6 +6,10 @@ package com.demo.obfuscated;
  * Core targets use 2-parameter form (value, tenant).
  * Suite targets use 5-parameter form (account, project, value, environmentId, tenant).
  */
+@Deprecated
+/**
+ * @deprecated Use TargetKey instead.
+ */
 public enum LegacyTargetCode {
     CORE_PROD("prod", "tenant-main"),
     CORE_TEST("test", "tenant-main"),

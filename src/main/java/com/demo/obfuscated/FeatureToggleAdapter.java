@@ -36,6 +36,7 @@ public class FeatureToggleAdapter {
         return false;
     }
 
+    @Deprecated
     public boolean isEnabled(String toggleName, LegacyTargetCode target) {
         return isEnabled(toggleName, target != null ? target.toTargetKey() : null);
     }
@@ -52,6 +53,7 @@ public class FeatureToggleAdapter {
                 .collect(Collectors.toList());
     }
 
+    @Deprecated
     public List<LegacyTargetCode> getLegacyTargetsForToggle(String toggleName) {
         return getTargetsForToggle(toggleName).stream()
                 .map(TargetConverter::toLegacy)

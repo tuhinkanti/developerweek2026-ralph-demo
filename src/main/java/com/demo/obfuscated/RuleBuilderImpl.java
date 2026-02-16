@@ -9,6 +9,7 @@ public class RuleBuilderImpl implements RuleBuilder {
     private int threshold;
 
     @Override
+    @Deprecated
     public RuleBuilder withTarget(LegacyTargetCode target) {
         this.target = target;
         this.targetKey = TargetConverter.fromLegacy(target);

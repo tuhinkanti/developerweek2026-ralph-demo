@@ -22,6 +22,7 @@ public class TargetHandler {
         return "unknown";
     }
 
+    @Deprecated
     public String categorize(LegacyTargetCode target) {
         return categorize(target != null ? target.toTargetKey() : null);
     }
@@ -31,6 +32,7 @@ public class TargetHandler {
         return "production".equals(category) || "stage".equals(category);
     }
 
+    @Deprecated
     public boolean requiresApproval(LegacyTargetCode target) {
         return requiresApproval(target != null ? target.toTargetKey() : null);
     }

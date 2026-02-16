@@ -24,6 +24,7 @@ public abstract class BaseRuleStrategy implements RuleStrategy {
     }
 
     @Override
+    @Deprecated
     public LegacyTargetCode getTarget() {
         return target;
     }

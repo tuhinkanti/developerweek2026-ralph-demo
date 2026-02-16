@@ -28,6 +28,7 @@ public class WebhookHandler {
         return targetEndpoints.get(target);
     }
 
+    @Deprecated
     public String resolveEndpoint(LegacyTargetCode target) {
         return target != null ? resolveEndpoint(target.toTargetKey()) : null;
     }
@@ -46,6 +47,7 @@ public class WebhookHandler {
         return new WebhookResult(true, "Routed " + eventType + " to " + endpoint);
     }
 
+    @Deprecated
     public WebhookResult handle(String eventType, LegacyTargetCode target) {
         return target != null ? handle(eventType, target.toTargetKey()) : new WebhookResult(false, "Missing target");
     }
