@@ -7,19 +7,22 @@ This is a single-project demo. Execute from `ralph_demo`, but migrate code at re
 
 ## Workflow
 
-1. **Read** `prd.json` to see all user stories and their status
-2. **Read** `progress.txt` for codebase patterns and context
-3. **Pick** the highest priority story where `passes: false` (if tied, pick the lowest story ID)
-4. **Implement** the story following acceptance criteria
-5. **Run** `../gradlew test` to verify all tests pass
-6. **Commit** with format: `feat: US-XXX - Title`
-7. **Update** `prd.json` to set `passes: true` only after acceptance criteria are met and tests pass
-8. **Append** any learnings to `progress.txt`
-9. **Repeat** until all stories pass
+1. **Setup**: If not already on a feature branch, create one: `git checkout -b ralph-migration-$(date +%Y%m%d%H%M)`
+2. **Read** `prd.json` to see all user stories and their status
+3. **Read** `progress.txt` for codebase patterns and context
+4. **Pick** the highest priority story where `passes: false` (if tied, pick the lowest story ID)
+5. **Implement** the story following acceptance criteria
+6. **Run** `../gradlew test` to verify all tests pass
+7. **Commit** with format: `feat: US-XXX - Title`
+8. **Update** `prd.json` to set `passes: true` only after acceptance criteria are met and tests pass
+9. **Append** any learnings to `progress.txt`
+10. **Repeat** until all stories pass
 
 ## Completion
 
-When ALL stories have `passes: true`, output exactly:
+When ALL stories have `passes: true`:
+1. **Push** the feature branch to remote.
+2. **Output** exactly:
 ```
 <promise>COMPLETE</promise>
 ```

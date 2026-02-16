@@ -22,7 +22,7 @@ class WebhookHandlerTest {
 
     @Test
     void resolveNullTargetReturnsNull() {
-        assertNull(handler.resolveEndpoint(null));
+        assertNull(handler.resolveEndpoint((TargetKey) null));
     }
 
     @Test
@@ -55,7 +55,7 @@ class WebhookHandlerTest {
         WebhookHandler.WebhookResult result = handler.handle(null, LegacyTargetCode.CORE_PROD);
         assertFalse(result.isSuccess());
 
-        result = handler.handle("create", null);
+        result = handler.handle("create", (TargetKey) null);
         assertFalse(result.isSuccess());
     }
 }

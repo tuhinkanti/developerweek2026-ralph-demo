@@ -14,6 +14,14 @@ public class RolloutRuleStrategy extends BaseRuleStrategy {
         this.rolloutPercentage = rolloutPercentage;
     }
 
+    public RolloutRuleStrategy(TargetKey targetKey, int rolloutPercentage) {
+        super(targetKey);
+        if (rolloutPercentage < 0 || rolloutPercentage > 100) {
+            throw new IllegalArgumentException("Rollout percentage must be 0-100, got: " + rolloutPercentage);
+        }
+        this.rolloutPercentage = rolloutPercentage;
+    }
+
     public int getRolloutPercentage() {
         return rolloutPercentage;
     }

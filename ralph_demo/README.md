@@ -40,11 +40,11 @@ The agent will incrementally migrate from the enum to a string-based `TargetKey`
 ## Setup
 
 ```bash
-cd ralph_demo
-../gradlew build
+# From the repository root
+./gradlew build
 ```
 
-All demo commands are executed from `ralph_demo`, and build/test commands target the root project.
+All demo commands are executed from `ralph_demo`, but build/test commands target the root project.
 
 ## Running the Demo
 
@@ -52,7 +52,7 @@ All demo commands are executed from `ralph_demo`, and build/test commands target
    ```bash
    cat prd.json          # See user stories (9 stories, all passes: false)
    cat progress.txt      # See codebase context
-   ../gradlew test       # Verify tests pass (green baseline)
+   ./gradlew test        # Verify tests pass from root (green baseline)
    ```
 
 2. **Run the ralph loop:**
@@ -98,6 +98,12 @@ The agent will:
 All while keeping existing tests passing at every step!
 
 ## Troubleshooting
+
+**Java Runtime not found:** Ensure `java -version` works. If you have Java installed but it's not found, set your `JAVA_HOME`:
+```bash
+export JAVA_HOME=/path/to/your/java/home
+export PATH=$JAVA_HOME/bin:$PATH
+```
 
 **Agent CLI not found:** Install your agent CLI and ensure it's in your PATH.
 

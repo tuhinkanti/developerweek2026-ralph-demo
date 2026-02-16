@@ -63,3 +63,59 @@ Suite targets (5-param): LegacyTargetCode(account, project, value, environmentId
 - Stories are intentionally scoped to one seam each (data model, conversion, interface, serialization, integration, deprecation).
 - Priorities are dependency-safe: foundations (P1/P2) precede broad integration (P3) and deprecation (P4).
 - `passes` remains binary per story and should be flipped only after `../gradlew test` is green.
+
+## US-001 - Create TargetKey data class
+- Created TargetKey class with value, account, project, environmentId, and tenant fields.
+- Implemented equals/hashCode and toString.
+- Implemented getValueWithProject().
+- Verified with unit tests and ensured existing tests pass.
+
+## US-002 - Create TargetRepository interface and in-memory implementation
+- Created TargetRepository interface with lookup methods.
+- Implemented InMemoryTargetRepository seeding from LegacyTargetCode.
+- Added unit tests for all lookup paths including unknown targets.
+- Verified with tests.
+
+## US-003 - Add conversion methods to LegacyTargetCode
+- Added conversion methods to LegacyTargetCode enum.
+- Created TargetConverter utility class.
+- Added unit tests for round-trip conversions and unknown inputs.
+- Verified with tests.
+
+## US-004 - Add string-based target getter to RuleStrategy interface
+- Added getTargetKey() and getTargetValue() to RuleStrategy interface.
+- Updated BaseRuleStrategy and concrete strategies to support TargetKey constructors.
+- Fixed null ambiguity in existing tests by explicit casting.
+- Added RuleStrategyTargetKeyTest to verify new functionality.
+- Verified with all tests passing.
+
+## US-005 - Update RuleBuilder with TargetKey support
+- Added withTargetKey(TargetKey) to RuleBuilder interface.
+- Updated RuleBuilderImpl to support building from TargetKey.
+- Added RuleBuilderTest to verify enum and TargetKey builder paths.
+- Verified with all tests passing.
+
+## US-006 - Update serializer and deserializer for backward compatibility
+- Updated RuleStrategySerializer to write all TargetKey fields.
+- Updated RuleStrategyDeserializer to read TargetKey fields and support legacy enum format.
+- Handled empty fields as null in deserializer to ensure TargetKey equality.
+- Added round-trip and backward compatibility tests.
+- Verified with all tests passing.
+
+## US-007 - Migrate RuleValidationService and WebhookHandler to use string-based targets
+- Migrated RuleValidationService to use TargetKey and value-based checks.
+- Migrated WebhookHandler to use TargetKey in its internal map.
+- Added TargetKey overloads to WebhookHandler and fixed null ambiguities in tests.
+- Verified with all tests passing.
+
+## US-008 - Migrate FeatureToggleAdapter and TenantConfigLoader
+- Updated FeatureToggleAdapter to use TargetKey and added overloads.
+- Updated TenantConfigLoader resolve methods to return TargetKey.
+- Updated TargetHandler to use TargetKey and added overloads.
+- Fixed tests to use TargetKey types.
+- Verified with all tests passing.
+
+## US-009 - Deprecate LegacyTargetCode enum
+- Added @Deprecated to LegacyTargetCode enum and all methods using it.
+- Added deprecation Javadoc with migration instructions.
+- Verified that all tests pass.

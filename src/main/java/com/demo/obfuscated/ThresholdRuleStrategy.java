@@ -11,6 +11,11 @@ public class ThresholdRuleStrategy extends BaseRuleStrategy {
         this.threshold = threshold;
     }
 
+    public ThresholdRuleStrategy(TargetKey targetKey, int threshold) {
+        super(targetKey);
+        this.threshold = threshold;
+    }
+
     public int getThreshold() {
         return threshold;
     }

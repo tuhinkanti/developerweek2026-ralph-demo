@@ -1,7 +1,8 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 MAX_ITERATIONS=${1:-10}
+LOG_FILE="iteration.log"
 
 # Validate gemini CLI is available
 if ! command -v gemini &> /dev/null; then
@@ -28,18 +29,20 @@ for i in $(seq 1 $MAX_ITERATIONS); do
     echo ">>> Iteration $i of $MAX_ITERATIONS"
     echo "-------------------------------------------"
     
-    OUTPUT=$(cat prompt.md | gemini --yolo 2>&1)
-    echo "$OUTPUT"
+    cat prompt.md | gemini --yolo 2>&1 | tee "$LOG_FILE"
     
-    if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
+    if grep -q "<promise>COMPLETE</promise>" "$LOG_FILE"; then
         echo ""
         echo "==========================================="
         echo "All stories complete!"
+        rm -f "$LOG_FILE"
         exit 0
     fi
     
     sleep 2
 done
+
+rm -f "$LOG_FILE"
 
 echo ""
 echo "==========================================="

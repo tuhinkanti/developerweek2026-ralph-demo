@@ -13,19 +13,42 @@ public class RuleStrategyDeserializer {
             return null;
         }
         Map<String, String> fields = parseFields(raw);
-        LegacyTargetCode target = resolveTarget(fields.get("target"));
-        if (target == null) {
+        
+        TargetKey targetKey = resolveTargetKey(fields);
+        LegacyTargetCode legacyTarget = resolveTarget(fields.get("target"));
+        
+        if (targetKey == null && legacyTarget == null) {
             return null;
         }
+
         if (fields.containsKey("expression")) {
-            return new ExpressionRuleStrategy(target, fields.get("expression"));
+            String expr = fields.get("expression");
+            return (targetKey != null) ? new ExpressionRuleStrategy(targetKey, expr) : new ExpressionRuleStrategy(legacyTarget, expr);
         }
         if (fields.containsKey("rolloutPct")) {
             int pct = parseIntOrZero(fields.get("rolloutPct"));
-            return new RolloutRuleStrategy(target, pct);
+            return (targetKey != null) ? new RolloutRuleStrategy(targetKey, pct) : new RolloutRuleStrategy(legacyTarget, pct);
         }
         int threshold = parseIntOrZero(fields.get("threshold"));
-        return new ThresholdRuleStrategy(target, threshold);
+        return (targetKey != null) ? new ThresholdRuleStrategy(targetKey, threshold) : new ThresholdRuleStrategy(legacyTarget, threshold);
+    }
+
+    private TargetKey resolveTargetKey(Map<String, String> fields) {
+        String value = nullIfEmpty(fields.get("value"));
+        String tenant = nullIfEmpty(fields.get("tenant"));
+        if (value == null && tenant == null) {
+            return null;
+        }
+        
+        String account = nullIfEmpty(fields.get("account"));
+        String project = nullIfEmpty(fields.get("project"));
+        String environmentId = nullIfEmpty(fields.get("environmentId"));
+        
+        return new TargetKey(value, account, project, environmentId, tenant);
+    }
+
+    private String nullIfEmpty(String s) {
+        return (s == null || s.isEmpty()) ? null : s;
     }
 
     private LegacyTargetCode resolveTarget(String name) {

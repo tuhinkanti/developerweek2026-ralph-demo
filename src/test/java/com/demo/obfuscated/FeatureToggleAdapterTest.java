@@ -19,18 +19,20 @@ class FeatureToggleAdapterTest {
     @Test
     void isEnabledWhenRuleMatches() {
         adapter.register("toggle-x", new ExpressionRuleStrategy(LegacyTargetCode.CORE_PROD, "true"));
+        assertTrue(adapter.isEnabled("toggle-x", LegacyTargetCode.CORE_PROD.toTargetKey()));
         assertTrue(adapter.isEnabled("toggle-x", LegacyTargetCode.CORE_PROD));
     }
 
     @Test
     void isNotEnabledWhenTargetMismatch() {
         adapter.register("toggle-x", new ExpressionRuleStrategy(LegacyTargetCode.CORE_PROD, "true"));
+        assertFalse(adapter.isEnabled("toggle-x", LegacyTargetCode.CORE_TEST.toTargetKey()));
         assertFalse(adapter.isEnabled("toggle-x", LegacyTargetCode.CORE_TEST));
     }
 
     @Test
     void isNotEnabledWhenToggleNotRegistered() {
-        assertFalse(adapter.isEnabled("unknown", LegacyTargetCode.CORE_PROD));
+        assertFalse(adapter.isEnabled("unknown", LegacyTargetCode.CORE_PROD.toTargetKey()));
     }
 
     @Test
@@ -38,10 +40,10 @@ class FeatureToggleAdapterTest {
         adapter.register("toggle-y", new ThresholdRuleStrategy(LegacyTargetCode.CORE_PROD, 10));
         adapter.register("toggle-y", new ThresholdRuleStrategy(LegacyTargetCode.CORE_TEST, 20));
 
-        List<LegacyTargetCode> targets = adapter.getTargetsForToggle("toggle-y");
+        List<TargetKey> targets = adapter.getTargetsForToggle("toggle-y");
         assertEquals(2, targets.size());
-        assertTrue(targets.contains(LegacyTargetCode.CORE_PROD));
-        assertTrue(targets.contains(LegacyTargetCode.CORE_TEST));
+        assertTrue(targets.contains(LegacyTargetCode.CORE_PROD.toTargetKey()));
+        assertTrue(targets.contains(LegacyTargetCode.CORE_TEST.toTargetKey()));
     }
 
     @Test
@@ -50,15 +52,15 @@ class FeatureToggleAdapterTest {
         adapter.register("toggle-z", new ThresholdRuleStrategy(LegacyTargetCode.CORE_TEST, 20));
         adapter.register("toggle-z", new ThresholdRuleStrategy(LegacyTargetCode.SUITE_ALPHA_PROD, 30));
 
-        List<LegacyTargetCode> prodTargets = adapter.getProductionTargetsForToggle("toggle-z");
+        List<TargetKey> prodTargets = adapter.getProductionTargetsForToggle("toggle-z");
         assertEquals(2, prodTargets.size());
-        assertTrue(prodTargets.contains(LegacyTargetCode.CORE_PROD));
-        assertTrue(prodTargets.contains(LegacyTargetCode.SUITE_ALPHA_PROD));
+        assertTrue(prodTargets.contains(LegacyTargetCode.CORE_PROD.toTargetKey()));
+        assertTrue(prodTargets.contains(LegacyTargetCode.SUITE_ALPHA_PROD.toTargetKey()));
     }
 
     @Test
     void nullInputsReturnFalse() {
-        assertFalse(adapter.isEnabled(null, LegacyTargetCode.CORE_PROD));
-        assertFalse(adapter.isEnabled("toggle-x", null));
+        assertFalse(adapter.isEnabled(null, (TargetKey) null));
+        assertFalse(adapter.isEnabled("toggle-x", (TargetKey) null));
     }
 }

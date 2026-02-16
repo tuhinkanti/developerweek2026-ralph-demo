@@ -6,7 +6,7 @@
       "id": "US-001",
       "title": "Create TargetKey data class",
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Create TargetKey class in com.demo.obfuscated with fields: value, account, project, environmentId, tenant",
         "Implement equals/hashCode on all fields and include a deterministic toString()",
@@ -19,7 +19,7 @@
       "id": "US-002",
       "title": "Create TargetRepository interface and in-memory implementation",
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Create TargetRepository interface with findByValue, findByAccountProjectAndValue, findByTenantAndTarget, findAll",
         "Create InMemoryTargetRepository that seeds from LegacyTargetCode.values() and supports deterministic lookup behavior for core and suite targets",
@@ -31,7 +31,7 @@
       "id": "US-003",
       "title": "Add conversion methods to LegacyTargetCode",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add LegacyTargetCode conversion methods: toTargetKey(), fromTargetKey(TargetKey), fromValue(String), fromTenantAndValue(String, String), fromAccountProjectAndValue(String, String, String)",
         "Ensure conversion behavior is defined and consistent for unknown or unmapped inputs with documented IllegalArgumentException behavior",
@@ -44,7 +44,7 @@
       "id": "US-004",
       "title": "Add string-based target getter to RuleStrategy interface",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add default method getTargetKey() to RuleStrategy that maps existing enum behavior through TargetConverter",
         "Add default method getTargetValue() that returns the string value",
@@ -57,7 +57,7 @@
       "id": "US-005",
       "title": "Update RuleBuilder with TargetKey support",
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add default method withTargetKey(TargetKey) to RuleBuilder interface",
         "Update RuleBuilderImpl to support building from TargetKey",
@@ -69,7 +69,7 @@
       "id": "US-006",
       "title": "Update serializer and deserializer for backward compatibility",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Update RuleStrategySerializer to write TargetKey fields (value, tenant, account, project, environmentId)",
         "Update RuleStrategyDeserializer to read both legacy enum name and new TargetKey fields",
@@ -82,7 +82,7 @@
       "id": "US-007",
       "title": "Migrate RuleValidationService and WebhookHandler to use string-based targets",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Migrate RuleValidationService and WebhookHandler logic to target value-based behavior without relying on enum identity checks",
         "Preserve current behavior for all existing target cases while supporting TargetKey-based inputs",
@@ -94,7 +94,7 @@
       "id": "US-008",
       "title": "Migrate FeatureToggleAdapter and TenantConfigLoader",
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Update FeatureToggleAdapter to accept TargetKey in isEnabled and register methods",
         "Update TenantConfigLoader to return TargetKey from resolve methods",
@@ -107,7 +107,7 @@
       "id": "US-009",
       "title": "Deprecate LegacyTargetCode enum",
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "acceptance_criteria": [
         "Add @Deprecated annotation to LegacyTargetCode enum",
         "Add deprecation Javadoc with migration instructions pointing to TargetKey",

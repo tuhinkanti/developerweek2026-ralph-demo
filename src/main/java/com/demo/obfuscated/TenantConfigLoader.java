@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Loads tenant configuration and resolves enum targets from tenant/value pairs.
@@ -25,15 +26,16 @@ public class TenantConfigLoader {
         }
     }
 
-    public List<LegacyTargetCode> getTargetsForTenant(String tenant) {
+    public List<TargetKey> getTargetsForTenant(String tenant) {
         if (tenant == null) {
             return List.of();
         }
         List<LegacyTargetCode> targets = tenantTargets.get(tenant);
-        return targets != null ? new ArrayList<>(targets) : List.of();
+        if (targets == null) return List.of();
+        return targets.stream().map(LegacyTargetCode::toTargetKey).collect(Collectors.toList());
     }
 
-    public LegacyTargetCode resolve(String tenant, String value) {
+    public TargetKey resolve(String tenant, String value) {
         if (tenant == null || value == null) {
             return null;
         }
@@ -43,13 +45,13 @@ public class TenantConfigLoader {
         }
         for (LegacyTargetCode target : targets) {
             if (value.equals(target.getValue())) {
-                return target;
+                return target.toTargetKey();
             }
         }
         return null;
     }
 
-    public LegacyTargetCode resolveByAccountProjectValue(String account, String project, String value) {
+    public TargetKey resolveByAccountProjectValue(String account, String project, String value) {
         if (value == null) {
             return null;
         }
@@ -57,7 +59,7 @@ public class TenantConfigLoader {
             if (matches(target.getAccount(), account)
                     && matches(target.getProject(), project)
                     && value.equals(target.getValue())) {
-                return target;
+                return target.toTargetKey();
             }
         }
         return null;
